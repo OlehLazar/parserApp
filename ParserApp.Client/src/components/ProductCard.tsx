@@ -35,7 +35,7 @@ function ProductCard({
         <img
           src={product.imageUrl}
           alt={product.name}
-          className="h-48 w-full bg-[#f0f2ec] object-cover"
+          className="h-48 w-full bg-[#f0f2ec] object-contain"
           loading="lazy"
         />
       )}
