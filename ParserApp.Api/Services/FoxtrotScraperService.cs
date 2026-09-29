@@ -1,6 +1,7 @@
 ﻿using HtmlAgilityPack;
 using ParserApp.Api.Data;
 using ParserApp.Api.Entities;
+using ParserApp.Api.Constants;
 
 namespace ParserApp.Api.Services;
 
@@ -24,7 +25,7 @@ public class FoxtrotScraperService
 		var productNodes = document.DocumentNode.SelectNodes("//div[contains(@class, 'product-card') and @data-id]");
 
 		if (productNodes == null || productNodes.Count == 0)
-			throw new Exception("Не вдалося знайти товари. Перевірте селектори або посилання.");
+			throw new Exception(Messages.NoProductsFound);
 
 		var productsToSave = new List<Product>();
 
@@ -51,7 +52,7 @@ public class FoxtrotScraperService
 			}
 
 			var price = node.GetAttributeValue("data-price", "");
-			var description = !string.IsNullOrEmpty(price) ? $"Ціна: {price} ₴" : "Ціна не вказана";
+			var description = !string.IsNullOrEmpty(price) ? $"Ціна: {price} ₴" : Messages.PriceNotSpecified;
 
 			var paramNodes = node.SelectNodes(".//ul[contains(@class, 'product-params-list')]/li");
 			if (paramNodes != null && paramNodes.Count > 0)
@@ -84,7 +85,7 @@ public class FoxtrotScraperService
 		}
 		else
 		{
-			throw new Exception("Товари знайдені у HTML, але сталася помилка під час витягування їхніх даних.");
+			throw new Exception(Messages.ExtractionError);
 		}
 	}
 }

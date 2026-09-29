@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using ParserApp.Api.Data;
 using ParserApp.Api.Entities;
 using ParserApp.Api.Services;
+using ParserApp.Api.Constants;
+using ParserApp.Api.Extensions;
 
 namespace ParserApp.Api.Controllers;
 
@@ -31,13 +33,13 @@ public class ProductsController : ControllerBase
 	public async Task<IActionResult> ParseProducts([FromBody] string url)
 	{
 		if (string.IsNullOrWhiteSpace(url))
-			return BadRequest("URL порожній.");
+			return BadRequest(Messages.UrlEmpty);
 
 		await _scraper.ParseAndSaveAsync(url);
 
 		return Ok(new
 		{
-			message = "Товари успішно відпарсено та збережено"
+			message = Messages.ParseSuccess
 		});
 	}
 
@@ -51,9 +53,7 @@ public class ProductsController : ControllerBase
 		if (product == null)
 			return NotFound();
 
-		product.Name = updatedProduct.Name;
-		product.Description = updatedProduct.Description;
-		product.ImageUrl = updatedProduct.ImageUrl;
+		product.UpdateFrom(updatedProduct);
 
 		await _context.SaveChangesAsync();
 
